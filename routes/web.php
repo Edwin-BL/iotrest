@@ -16,3 +16,21 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->post('login','AuthController@login');
+
+
+function recurso($router, $url, $modelo){
+    $router->get("$url",$modelo."Controller@index");
+    $router->get("$url/{id}",$modelo."Controller@show");
+    $router->post("$url",$modelo."Controller@store");
+    $router->put("$url/{id}",$modelo."Controller@update");
+    $router->delete("$url/{id}",$modelo."Controller@destroy");
+}
+
+$router->group(['middleware' => 'auth'], function () use ($router) {
+    recurso($router, 'users', 'Users');
+    recurso($router, 'sensors', 'Sensors');
+    recurso($router, 'actuators', 'Actuators');
+});
+
